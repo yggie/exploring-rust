@@ -1,0 +1,301 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Exploring Rust</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+    <link rel="stylesheet" href="lib/font/inconsolata.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <style>
+      .reveal code {
+        font-size: 32px;
+        line-height: 1.2em;
+        font-family: 'Inconsolata';
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h1>Exploring Rust</h1>
+        </section>
+
+        <section>
+          <h2>Background</h2>
+          <ul>
+            <li>Studied Mechanical Engineering</li>
+            <li>Short stint as a Mechanical Engineer</li>
+            <li>Now working as a Web Developer</li>
+          </ul>
+        </section>
+
+        <section>
+          <p>I like Rust</p>
+        </section>
+
+        <section>
+          <p>Speed, Safety and Concurrency</p>
+        </section>
+
+        <section>
+          <p>Zero-cost abstractions</p>
+        </section>
+
+        <section>
+          <h3>Traits</h3>
+        </section>
+
+        <section>
+          <p>A simple trait</p>
+          <pre><code class="rust" data-trim>
+trait Foo {
+    fn bar();
+}
+          </code></pre>
+        </section>
+
+        <section>
+          <p>Static dispatch</p>
+          <pre><code class="rust" data-trim>
+fn call_foo&lt;T: Foo&gt;(t: T) {
+    t.foo()
+}
+          </code></pre>
+        </section>
+
+        <section>
+          <h3>Unit-like structs</h3>
+
+          <aside class="notes">
+            - or as I affectionately call it, the zero-sized struct
+          </aside>
+        </section>
+
+        <section>
+          <p>A unit-like struct</p>
+          <pre><code class="rust" data-trim>
+struct Foo { }
+          </code></pre>
+
+          <aside class="notes">
+            - as of Rust 1.8, this syntax is valid
+          </aside>
+        </section>
+
+        <section>
+          <p>Zero sized!</p>
+          <pre><code class="rust" data-trim>
+assert!(size_of::&lt;Foo&gt;() == 0)
+          </code></pre>
+
+          <aside class="notes">
+            - uses up no bytes, but gives the compiler plenty of information!
+          </aside>
+        </section>
+
+<!--         <section> -->
+<!--           <p>Marker types</p> -->
+<!--           <pre><code class="rust" data&#45;trim> -->
+<!-- struct Foo&#38;lt;T&#38;gt; { -->
+<!--     bar: usize, -->
+<!--     _phantom: PhantomData&#38;lt;T&#38;gt;, -->
+<!-- } -->
+<!--  -->
+<!-- impl&#38;lt;T&#38;gt; FooBar for Foo&#38;lt;T&#38;gt; { -->
+<!--     type Output = T; -->
+<!--  -->
+<!--     // magic here -->
+<!-- } -->
+<!--           </code></pre> -->
+<!--  -->
+<!--           <aside class="notes"> -->
+<!--             &#45; not particularly useful, but good to know when needed! -->
+<!--             &#45; useful for implementing traits with associated type bounds that -->
+<!--               the struct does not really care about -->
+<!--           </aside> -->
+<!--         </section> -->
+
+        <section>
+          <p>Stateless trait implementations</p>
+          <pre><code class="rust" data-trim>
+impl Bar for Foo {
+    fn bar(&amp;self) {
+        // magic here
+    }
+}
+          </code></pre>
+
+          <aside class="notes">
+            - useful for implementations of traits that require no state
+          </aside>
+        </section>
+
+        <section>
+          <h3>Newtype pattern</h3>
+
+          <aside class="notes">
+            - as described on the Rust book, it is really just a tuple struct
+              with a single element
+            - the name was borrowed from Haskell’s newtype
+          </aside>
+        </section>
+
+        <section>
+          <p>A tuple struct with one element!</p>
+          <pre><code class="rust" data-trim>
+struct FooBar(usize);
+          </code></pre>
+        </section>
+
+        <section>
+          <p>No memory overhead!</p>
+          <pre><code class="rust" data-trim>
+assert!(size_of::&lt;FooBar&gt;() == size_of::&lt;usize&gt;())
+          </code></pre>
+
+          <aside class="notes">
+            - it has no memory overhead, but a different type identity
+          </aside>
+        </section>
+
+        <section>
+          <p>Validated types</p>
+          <pre><code class="rust" data-trim>
+impl Vector {
+    pub fn normalize(self) -&gt; UnitVector {
+        UnitVector::new(self)
+    }
+}
+          </code></pre>
+
+          <aside class="notes">
+            - useful to assert compile time guarantees that the type has some
+              useful properties
+            - also limits operations between the newtypes and ordinary types,
+              unless the operations are defined (like Add/Sub impls)
+          </aside>
+        </section>
+
+        <section>
+          <p>Stateless decorators</p>
+          <pre><code class="rust" data-trim>
+struct LogFoo&lt;T: Foo&gt;(T);
+impl&lt;T: Foo&gt; Foo&lt;T&gt; for LogFoo&lt;T&gt; {
+    fn foo(&amp;self) -&gt; Bar {
+        let bar = self.0.foo();
+        println!("result of foo: {:?}", bar);
+        return bar;
+    }
+}
+          </code></pre>
+
+          <aside class="notes">
+            - complements the Trait system very well
+            - highly composable
+          </aside>
+        </section>
+
+        <section>
+          <h3>Lifetime bound structs</h3>
+        </section>
+
+        <section>
+          <p><code>std::cell::Ref</code></p>
+          <pre><code class="rust" data-trim>
+pub struct Ref&lt;'b, T&gt; where T: 'b + ?Sized {
+    // some fields omitted
+}
+          </code></pre>
+
+          <aside class="notes">
+            - reference types
+            - acts much like a borrow
+          </aside>
+        </section>
+
+        <section>
+          <p>Projections</p>
+          <pre><code class="rust" data-trim>
+struct Polygon(Vec&lt;Point&gt;);
+
+struct PolygonEdge&lt;'a&gt;(&amp;'a Point, &amp;'a Point);
+
+impl Polygon {
+    fn edges&lt;'a&gt;(&amp;'a self) -&gt; Iter&lt;PolygonEdge&lt;'a&gt;&gt; {
+        // polygon magic
+    }
+}
+          </code></pre>
+
+          <aside class="notes">
+            - complex projections of the data onto simpler types
+            - powerful abstraction without the cost of copying data
+          </aside>
+        </section>
+
+        <section>
+          <p>This slide is intentionally left blank</p>
+        </section>
+
+        <section>
+          <p>Summary</p>
+          <ul>
+            <li>Traits are awesome</li>
+            <li>Lifetimes are awesome</li>
+            <li>Rust is awesome</li>
+          </ul>
+        </section>
+
+        <section>
+          <p>Useful links</p>
+          <ul>
+            <li><a href="https://play.rust-lang.org/">https://play.rust-lang.org/</a></li>
+            <li><a href="https://doc.rust-lang.org/std/">https://doc.rust-lang.org/std/</a></li>
+            <li><a href="https://doc.rust-lang.org/stable/book/">https://doc.rust-lang.org/stable/book/</a></li>
+            <li><a href="https://doc.rust-lang.org/stable/nomicon/">https://doc.rust-lang.org/stable/nomicon/</a></li>
+            <li><a href="https://github.com/yggie/mach">https://github.com/yggie/mach</a></li>
+          </ul>
+        </section>
+
+        <section>
+          <p>Any questions?</p>
+        </section>
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+      // More info https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        history: true,
+
+        // More info https://github.com/hakimel/reveal.js#dependencies
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+        ]
+      });
+    </script>
+  </body>
+</html>
