@@ -198,7 +198,7 @@ impl Vector {
           <pre><code class="rust" data-trim>
 struct LogFoo&lt;T: Foo&gt;(T);
 
-impl&lt;T: Foo&gt; Foo&lt;T&gt; for LogFoo&lt;T&gt; {
+impl&lt;T: Foo&gt; Foo for LogFoo&lt;T&gt; {
     fn bar(&amp;self) -&gt; Bar {
         let bar = self.0.bar();
         println!("result of foo: {:?}", bar);
@@ -252,15 +252,6 @@ struct SubPolygon&lt;'a&gt;(Vec&lt;&amp;'a Point&gt;);
         </section>
 
         <section>
-          <p>Summary</p>
-          <ul>
-            <li>Traits are awesome</li>
-            <li>Lifetimes are awesome</li>
-            <li>Rust is awesome</li>
-          </ul>
-        </section>
-
-        <section>
           <p>Useful links</p>
           <ul>
             <li><a href="https://play.rust-lang.org/">https://play.rust-lang.org/</a></li>
@@ -268,6 +259,15 @@ struct SubPolygon&lt;'a&gt;(Vec&lt;&amp;'a Point&gt;);
             <li><a href="https://doc.rust-lang.org/stable/book/">https://doc.rust-lang.org/stable/book/</a></li>
             <li><a href="https://doc.rust-lang.org/stable/nomicon/">https://doc.rust-lang.org/stable/nomicon/</a></li>
             <li><a href="https://github.com/yggie/mach">https://github.com/yggie/mach</a></li>
+          </ul>
+        </section>
+
+        <section>
+          <p>Summary</p>
+          <ul>
+            <li>Traits are awesome</li>
+            <li>Lifetimes are awesome</li>
+            <li>Rust is awesome</li>
           </ul>
         </section>
 
