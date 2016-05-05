@@ -66,7 +66,7 @@
           <p>A simple trait</p>
           <pre><code class="rust" data-trim>
 trait Foo {
-    fn bar();
+    fn bar(&amp;self);
 }
           </code></pre>
         </section>
@@ -74,7 +74,7 @@ trait Foo {
         <section>
           <p>Static dispatch</p>
           <pre><code class="rust" data-trim>
-fn call_foo&lt;T: Foo&gt;(t: T) {
+fn call_bar&lt;T: Foo&gt;(t: T) {
     t.bar()
 }
           </code></pre>
@@ -180,7 +180,7 @@ assert!(size_of::&lt;FooBar&gt;() == size_of::&lt;usize&gt;())
           <pre><code class="rust" data-trim>
 impl Vector {
     pub fn normalize(self) -&gt; UnitVector {
-        UnitVector::new(self)
+        UnitVector::from(self)
     }
 }
           </code></pre>
@@ -197,6 +197,7 @@ impl Vector {
           <p>Stateless decorators</p>
           <pre><code class="rust" data-trim>
 struct LogFoo&lt;T: Foo&gt;(T);
+
 impl&lt;T: Foo&gt; Foo&lt;T&gt; for LogFoo&lt;T&gt; {
     fn bar(&amp;self) -&gt; Bar {
         let bar = self.0.bar();
