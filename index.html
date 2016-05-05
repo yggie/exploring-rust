@@ -75,7 +75,7 @@ trait Foo {
           <p>Static dispatch</p>
           <pre><code class="rust" data-trim>
 fn call_foo&lt;T: Foo&gt;(t: T) {
-    t.foo()
+    t.bar()
 }
           </code></pre>
         </section>
@@ -198,8 +198,8 @@ impl Vector {
           <pre><code class="rust" data-trim>
 struct LogFoo&lt;T: Foo&gt;(T);
 impl&lt;T: Foo&gt; Foo&lt;T&gt; for LogFoo&lt;T&gt; {
-    fn foo(&amp;self) -&gt; Bar {
-        let bar = self.0.foo();
+    fn bar(&amp;self) -&gt; Bar {
+        let bar = self.0.bar();
         println!("result of foo: {:?}", bar);
         return bar;
     }
@@ -237,11 +237,7 @@ struct Polygon(Vec&lt;Point&gt;);
 
 struct PolygonEdge&lt;'a&gt;(&amp;'a Point, &amp;'a Point);
 
-impl Polygon {
-    fn edges&lt;'a&gt;(&amp;'a self) -&gt; Iter&lt;PolygonEdge&lt;'a&gt;&gt; {
-        // polygon magic
-    }
-}
+struct SubPolygon&lt;'a&gt;(Vec&lt;&amp;'a Point&gt;);
           </code></pre>
 
           <aside class="notes">
