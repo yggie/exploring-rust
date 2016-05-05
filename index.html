@@ -81,6 +81,12 @@ fn call_bar&lt;T: Foo&gt;(t: T) {
         </section>
 
         <section>
+          <ul>
+            <li>Avoid dynamic dispatch (performance cost)</li>
+          </ul>
+        </section>
+
+        <section>
           <h3>Unit-like structs</h3>
 
           <aside class="notes">
@@ -148,6 +154,12 @@ impl Bar for Foo {
         </section>
 
         <section>
+          <ul>
+            <li>Struct implementations that don’t exist at runtime</li>
+          </ul>
+        </section>
+
+        <section>
           <h3>Newtype pattern</h3>
 
           <aside class="notes">
@@ -194,6 +206,12 @@ impl Vector {
         </section>
 
         <section>
+          <ul>
+            <li>Encode validations in the type system</li>
+          </ul>
+        </section>
+
+        <section>
           <p>Stateless decorators</p>
           <pre><code class="rust" data-trim>
 struct LogFoo&lt;T: Foo&gt;(T);
@@ -211,6 +229,12 @@ impl&lt;T: Foo&gt; Foo for LogFoo&lt;T&gt; {
             - complements the Trait system very well
             - highly composable
           </aside>
+        </section>
+
+        <section>
+          <ul>
+            <li>Zero memory composable layers of abstractions</li>
+          </ul>
         </section>
 
         <section>
@@ -245,6 +269,12 @@ struct SubPolygon&lt;'a&gt;(Vec&lt;&amp;'a Point&gt;);
             - complex projections of the data onto simpler types
             - powerful abstraction without the cost of copying data
           </aside>
+        </section>
+
+        <section>
+          <ul>
+            <li>Create meaningful structs without copying</li>
+          </ul>
         </section>
 
         <section>
